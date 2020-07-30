@@ -1,0 +1,29 @@
+emitter_type: POINT
+
+particles_per_second: 922
+max_concurrent_particles: 234
+particles_to_emit: -1
+emit_all_at_once: TRUE
+shrink_over_time: TRUE
+
+min_size: 3 8
+max_size: 5 9
+min_color: 53 122 182 165
+max_color: 53 122 182 165
+min_rotation: 179
+max_rotation: 180
+min_speed: 84
+max_speed: 300
+min_emission_angle: -178
+max_emission_angle: 2
+
+acceleration: 0 100
+min_rotation_speed: 44.4575
+max_rotation_speed: 149.94
+rotation_direction: CLOCKWISE
+min_lifetime: 1.52934
+max_lifetime: 2.49196
+
+texture1: (null)
+texture2: (null)
+texture3: (null)

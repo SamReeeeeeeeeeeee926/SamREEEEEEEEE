@@ -1,0 +1,30 @@
+emitter_type: CIRCLE
+circle_radius: 1
+
+particles_per_second: 500
+max_concurrent_particles: 100
+particles_to_emit: -1
+emit_all_at_once: TRUE
+shrink_over_time: TRUE
+
+min_size: 20 20
+max_size: 20 20
+min_color: 255 255 0 255
+max_color: 255 255 0 255
+min_rotation: 0
+max_rotation: 0
+min_speed: 50
+max_speed: 100
+min_emission_angle: -180
+max_emission_angle: 180
+
+acceleration: 0 0
+min_rotation_speed: 0
+max_rotation_speed: 0
+rotation_direction: EITHER
+min_lifetime: 1
+max_lifetime: 2
+
+texture1: data/standard.png
+texture2: (null)
+texture3: (null)

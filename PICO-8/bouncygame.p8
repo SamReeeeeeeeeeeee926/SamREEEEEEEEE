@@ -1,0 +1,916 @@
+pico-8 cartridge // http://www.pico-8.com
+version 18
+__lua__
+--init
+--to do list
+ --juicyness!
+  --particles for that spunk
+  --camera shake for hazard cols.
+  --inbetween level progression
+
+function _init()
+
+ plyr={
+		s=1,
+		x=55,
+		y=93,
+		w=16,
+		h=16,
+		dx=0,
+		dy=0,
+	    max_dx=5,
+		max_dy=6,
+		anim=0,
+		acc= 1.03,
+		boost = 0,
+		running = false,
+		jumping = false,
+		falling = false,
+		landed  = false,
+		hold = false
+ }
+
+ fruits={}
+  start=32
+  count=4
+  interval=16
+  gravity=3.5
+ 
+ hazards={}
+  start_h=48
+  count_h=4
+  interval_h=16
+  grav_h=4
+
+--universal ints
+ 	grav = 0.2
+ 	fric = 0.9
+ 	wind = 0.1
+ 	level= 1
+ 	points = 0
+ 	goal = 0
+ 	--dire ⬅️-false ➡️-true
+ 	direc=true
+ 	
+--small ints
+ 	px=47
+ 	py=20
+ 	bkg = 13 
+ 	
+--blinks
+ 	gblink = 7
+ 	blinkf = 0
+ 	blinks = 4
+ 	blink_g_i=1
+ 	start_count = -1
+ 	
+--fade ints
+ 	fadeperc=0
+ 	
+--restrictions
+ 	map_start = 0
+ 	map_end = 128
+ 	
+--title ints
+ 	titx=45
+ 	tity=35
+
+--fruit?
+ 	f=false
+ 	h=false
+ 	
+--music?
+  musplay=false
+  
+--lvlpro
+  lvlpro = false
+ 	
+--game state
+  gams = 0
+
+--music
+  music(0)
+  
+--particles 
+  part={}
+  
+--game
+
+end
+
+function start_game()
+ 
+	 player_up()
+	 player_ani()
+ 
+  --spawntrail(plyr.x-8,plyr.y-16)
+
+  --updateparts()
+ 
+  bkg = 13
+
+  frit()
+  bad()
+  game_pro()
+  
+  if wind < 0 then 
+   direc = false
+  end
+  
+  if wind > 0 then
+   direc = true
+  end
+
+ if f==false then
+   for i=1,7 do
+     fruit={
+    
+      sprite=flr(rnd(count)+start),
+    	 x=i*(-interval), 
+    	 y=flr(rnd(90))
+    
+   	 }
+     	
+     add(fruits,fruit)
+     f=true
+ 			
+    end
+  end
+
+  if h==false then
+   for i=1,1 do
+     hazard={
+    
+      sprite_h=flr(rnd(count_h)+start_h),
+    	 x=i*(-interval_h-2), --wind
+    	 y=flr(rnd(80))
+    
+   	 }
+    	
+     add(hazards,hazard)
+     h=true
+ 			
+    end
+  end
+ 
+end
+
+function game_over()
+  if btn(❎) then
+ 	 _init()
+  end
+end
+
+function mainm()
+ doblink()
+  if start_count<0 then 
+   if btn(⬅️ or ➡️) then
+    sfx(11)
+    start_count=60
+    music(-1)
+   end
+  else
+   start_count -= 1
+   doblink()
+   fadeperc = (60 - start_count)/60
+   if start_count <= 0 then
+    start_count= -1
+    fadeperc = 0
+    gams = 1
+   end
+end
+end
+
+function tutorial()
+  
+end
+-->8
+--upd and drw
+
+function _update()
+ 
+--menu
+ if gams == 0 then
+  mainm()
+ end
+  
+  --tut
+ if gams == 3 then
+  tutorial()
+ end
+ 
+ --game over
+ if gams == 2 then
+  game_over()
+ end
+ 
+ if gams == 1 then
+  start_game()
+ end
+--end of update 
+end
+
+
+function _draw()
+
+--menu 
+if gams == 0 then
+ cls(9)
+ spr(64,titx,tity,5,3)
+ --particles
+ --drawparts()
+ print("press ⬅️ or ➡️ to start!",18,65,gblink)
+ print("press 🅾️ for how to play!",16,75,2)
+end
+
+
+--main game
+if gams == 1 then
+ 
+ pal()
+
+ if fadeperc ~= 0 then 
+  fadepal(fadeperc)
+ end
+
+ cls(bkg)
+ map(o)
+ spr(plyr.s,plyr.x,plyr.y,2,2)
+ print("points:" ..points,px,py,10)
+ print("goal:" ..goal,49,30,12)
+ rectfill(45,17,78,8,0)
+ print("level" ..level,50,10,7)
+
+ 
+--flying stuff
+ for fruit in all(fruits) do
+  spr(fruit.sprite,fruit.x,fruit.y)
+ end
+
+ for hazard in all(hazards) do
+  spr(hazard.sprite_h,hazard.x,hazard.y)
+ end
+ 
+ --player boost meter
+ if plyr.hold == true then
+	  
+	  circ(plyr.x+7,plyr.y+8,plyr.boost,12)
+	  circ(plyr.x+7,plyr.y+8,plyr.boost*1.2,7)
+	  circ(plyr.x+7,plyr.y+8,plyr.boost*20,7)
+	  
+ end
+
+end
+
+--game over
+ if gams == 2 then 
+  cls(1)
+  print("game over",45,50,7)
+  print("press x to start over",25,60,gblink)
+ end
+ 
+--tut
+ if gams == 3 then
+	 cls(1)
+	 --images
+	 rectfill(10,10,120,120,6)
+	 spr(1,55,50,2,2)
+	 print("use ⬅️ and ➡️ to move",23,70,7)
+	 print("hold and press c to jump",17,85,7)
+
+  --title
+	 rectfill(0,0,127,15,0)
+	 print("tutorial",48,5,7)
+ end 
+--end of draw
+end
+-->8
+--player
+
+function player_up()
+
+ plyr.dy+=grav
+ plyr.dx*=fric
+ plyr.dx=plyr.dx+wind
+
+
+--controllaaaaaa, controlla
+
+ if btn(⬅️) then
+   plyr.dx -= plyr.acc
+   plyr.running = true
+  else
+   plyr.running = false
+ end
+ if btn(➡️) then
+   plyr.dx += plyr.acc
+   plyr.running = true
+  else
+   plyr.running = false
+ end
+ 
+ if btn(❎)
+ and plyr.landed then
+  plyr.hold = true
+  sfx(0)
+ else
+ 	 plyr.dy -= plyr.boost
+   plyr.jumping = true
+   plyr.landed = false
+   plyr.hold = false
+   plyr.boost= 0
+ end
+ 
+ 
+ --chek up and down
+ if plyr.dy>0 then
+  plyr.falling = true
+  plyr.landed = false
+  plyr.jumping = false
+  	
+  	if collis_m(plyr,"down",0) then
+  	 plyr.landed=true
+  	 plyr.falling=false
+  	 plyr.dy=0
+  	 plyr.y-=((plyr.y+plyr.h+1)%8)-1
+  	end
+  elseif plyr.dy<0 then
+  	plyr.jumping = true
+  	if collis_m(plyr,"up",1) then
+  		plyr.dy=0
+  		plyr.y=0
+  		sfx(1)
+  	end
+  end 
+ 
+ --chek left and right
+ if plyr.dx<0 then
+ 	if collis_m(plyr,"left",1) then
+ 	 plyr.dx=0
+  end
+ elseif plyr.dx>0 then
+ 	if collis_m(plyr,"right",1) then
+ 	 plyr.dx=0
+ 	end
+ end
+ 
+ 
+ plyr.x+=plyr.dx
+ plyr.y+=plyr.dy
+ 
+ 
+ --restrictions
+ if plyr.hold == true then
+    
+    plyr.boost +=0.23
+    if plyr.boost >=10 then
+     plyr.boost = 10
+     sfx(4)
+    end
+  
+ end
+
+
+ --map restrictions
+	if plyr.x<map_start then
+	 plyr.x=map_start
+	end
+	if plyr.x>map_end-plyr.w then
+	 plyr.x=map_end-plyr.w 
+	end 
+ 
+ 	if plyr.y<map_start then
+	 plyr.dy=0
+	 sfx(1)
+	end
+	
+ 
+end
+-->8
+--collisions
+
+
+function collis_m(obj,aim,flag)
+
+	--obj = table needs x,y,w,h
+	local x =obj.x local y =obj.y
+	local w =obj.w local h =obj.h
+	
+	local x1 = 0 local y1 = 0
+	local x2 = 0 local y2 = 0
+	
+	if aim == "left" then
+				x1=x-2   y1=y
+				x2=x     y2=y+h-1
+				
+			elseif aim == "right" then
+				x1=x+w   y1=y
+				x2=x+w-2 y2=y+h-1
+				
+	  elseif aim == "up" then
+				x1=x+1   y1=y-2
+				x2=x+w-3 y2=y
+				
+	   elseif aim == "down" then
+	   x1=x+2     y1=y+h
+				x2=x+w-4   y2=y+h
+	end
+	
+	
+	--test------------
+--	x1r=x1    x2r=x2
+--	y1r=y1    y2r=y2
+	------------------
+	
+	--pix to ty
+	x1/=8 y1/=8
+	x2/=8 y2/=8
+	
+	if fget(mget(x1,y1),flag)
+  or fget(mget(x1,y2),flag)
+	 or fget(mget(x2,y1),flag)
+	 or fget(mget(x2,y2),flag) then
+	  return true
+	else
+	  return false
+	end
+	 
+
+end
+-->8
+--animaton
+function player_ani()
+
+if plyr.falling then
+	plyr.s = 3
+else
+ plyr.s = 1
+end
+
+if plyr.jumping then
+ plyr.s = 5
+ 
+else
+ plyr.s = 1
+end
+
+if plyr.hold then
+	plyr.s = 3
+else
+ plyr.s = 1
+end
+
+end
+
+function doblink()
+ 
+ local gseq = {4,8,9}
+
+ blinkf += 1
+ 
+ if blinkf > blinks then
+  blinkf = 0
+  blink_g_i += 1
+  if blink_g_i > #gseq then
+   blink_g_i = 1
+  end
+   gblink=gseq[blink_g_i]
+ end
+--end of blinks
+end
+
+function fadepal(_perc)
+ 
+ local p=flr(mid(0,_perc,1)*100)
+ local kmax,col,dpal,j,k
+ 
+ 
+ dpal={0,1,1,2,1,13,6,
+           4,4,9,3,13,1,13,14}
+ for j=1,15 do
+  col=j
+  kmax=(p+(j*1.46))/22
+ 
+  for k=1,kmax do 
+   col=dpal[col]
+  end 
+ 
+  pal(j,col)
+ end
+--end of fade
+end
+-->8
+--fruit & hazards
+
+ function frit()
+ 
+   for fruit in all(fruits) do
+    
+   --movement
+    fruit.x+=gravity
+ 
+   --collision
+   if  fruit.y+4>=plyr.y-4
+    and fruit.y-4<=plyr.y+4
+    and fruit.x+4>=plyr.x-4
+    and fruit.x-4<=plyr.x+4 then
+    points+=3
+    sfx(2)
+    
+    del(fruits,fruit)
+   end
+ 
+  if fruit.x>map_end then
+ 		del(fruits,fruit)
+  end
+ 
+ 
+  if #fruits == 5 then
+ 		f=false
+  end
+ 
+  end
+ end
+ 
+ 
+ --hazards
+
+function bad()
+ 
+   for hazard in all(hazards) do
+    
+   --movement
+    hazard.x+=grav_h
+ 
+   --collision
+    if  hazard.y+4>=plyr.y-4
+    and hazard.y-4<=plyr.y+4
+    and hazard.x+4>=plyr.x-4
+    and hazard.x-4<=plyr.x+4 then
+    points-=2
+    sfx(3)
+    bkg = 8
+    del(hazards,hazard)
+   end
+ 
+  if hazard.x>map_end then
+ 		del(hazards,hazard)
+  end
+ 
+ 
+ if #hazards == 0 then
+ 		h=false
+ end
+ 
+ end
+end
+-->8
+--progression
+function game_pro()
+ 
+ --first 4 levels
+ if level==1 then
+  goal = 25
+  wind = 0.2
+ end
+  
+ if level==2 then
+  goal = 50
+  wind = -0.1
+  gravity = -3.5
+ end 
+  
+ if level==3 then
+  goal = 75
+  wind = -0.3
+ end
+   
+ if level==4 then
+  goal = 100
+  wind = 0.4
+ end
+ 
+ --final lvl
+ if level == 5  then
+  goal = 150
+  wind = -0.4
+ end
+ 
+ if points >= goal then
+ 
+  if bkg == 15 then
+   bkg = 3
+  end
+  
+  if level <= 5 then
+   level +=1
+   points = 0
+   bkg += 1
+   sfx(5)
+  end
+  
+  if level > 5 then
+   gams = 4
+  end
+ end
+ 
+ 
+ if points < 0 then
+   gams = 2
+ end
+ --end of prog. 
+end
+
+
+
+
+-->8
+--te juice
+
+function addpart(_x,_y,_type,maxage)
+  
+ local _p = {}
+ _p.x = _x
+ _p.y = _y
+ _p.tpe = _type
+ _p.mage = _maxage
+ _p.age = 0  
+  
+  
+  add(part,_p)
+
+--end of addpart
+end
+
+function spawntrail(_x,_y)
+
+ addpart(_x,_y,0,60)
+
+--end of spawntrail
+end
+
+function updateparts()
+ local _p
+ 
+ for i=#part,1,-1 do
+  _p = part[i]
+  _p.age+=1
+  if _p.age > _p.mage then
+ 	 del(part,part[i])
+ 	else
+ 	
+ 	end
+ end
+--end of updateparts
+end
+
+function drawparts()
+
+ for i=1,#part do
+  _p=part[i]
+  
+  if _p.tpe == 0 then
+ 
+   pset(_p.x,_p.y,7)
+   
+  end
+ end
+--end of drawparts
+end
+__gfx__
+0000000000000222220000000000000000000000000002222200000000000222220000000000002222200000999999990e0000e0eeeeeeeeeeeeeeee00000000
+000000000000222222200000000000000000000000002222222000000000222222200000000002222222000099999999eee00eeeeeeeeeeeeeeeeeee00000000
+007007000002222222220000000000000000000000022222222200000002222222220000000022222222200099999999eeeeeeeeeeeeeeee0e0e0e0e00000000
+000770000000fffff7f0000000000222220000000000f1fff1f000000000fffff7f0000000000fffff7f000099999999eeeeeeee0e00e0e00e0e000e00000000
+000770000004ffffffff000000002222222000000004ffffffff00000004ffffffff00000000ffffffff400099999999eeeeeeee0000e0000e0e000e00000000
+007007000004f1fff1ff000000222222222220000004ff111fff00000004f1fff1ff00000000ff1fff1f4000999999990eeeeee0000000000e00000e00000000
+000000000000fffffff000000004fffff7ff00000000ff111ff000000000fffffff0000000000fffffff00009999999900eeee00000000000e00000e00000000
+0000000000000fffff0000000004ffffffff000000000fffff00000000000fffff000000000000fffff0000099999999000ee000000000000000000000000000
+000000000000cccfccc000000000f1fff1f000000000cccfccc000000000cccfccc0000000000cccfccc00000000000000000000000000000000000000000000
+000000000000ccccc9c0000000000fffff0000000000cccccac000000000cccccac0000000000cccccac00000000000000000000000000000000000000000000
+000000000000ccccccc000000000ccccc9c000000000ccccccc000000000ccccccc0005005000ccccccc00000000000aa0000000000000000000000000000000
+00000000000ccccccccc00000000ccccccc00000000ccccccccc0000000ccccccccccc5005ccccccccccc000000000aaaa000000000000000000000000000000
+00000000000ccccccccc0000000ccccccccc0000000ccccccccc0000000ccccccccccc5005ccccccccccc00000000aaaaaa00000000000000000000000000000
+00000000000cccc0cccc000000ccccccccccc000000cccc0cccc0000000cccc00ccccc5005ccccc00cccc0000000aaaaaaaa0000000000000000000000000000
+00000000000ccc000ccc00000cccccc0cccccc00000ccc000ccc0000000ccc00000000000000000000ccc0000000aaaaaaaa0000000000000000000000000000
+0000000000555500055550000055550005555000005555000555500000555500000000000000000000555500000aaaaaaaaaa000000000000000000000000000
+000c43bc0000c9c000cccc0000000cbc000000000000000000000000000000005555555555555555555555550000000cc0000000000000000000000000000000
+00cbbc3b0000ca4c0c99b3c00000c873000000000000000000000000000000005ccccac55cccccc65cccccc50000000cc0000000000000000000000000000000
+0cb7bbcc0000ca4cc99b388c000c817b000000aa9999944554499999aa0000005cccccc55cccccc65cccacc50000000cc0000000000000000000000000000000
+0cb7bbc0000ca94c97a9998800c8887b00000a44444444455444444444a000005cccccc55ccccc865cccccc50000000cc0000000000000000000000000000000
+cb7bbb3c0cca94c09a9999880c81817b00000a44444444455444444444a000005cccccc55cc8ccc65ca8ccc50000000cc0000000000000000000000000000000
+cbbbbb3ccaa94c0099999988c88887b3000009444444444554444444449000005b333b355ccccca65cccccc50000000aa0000000000000000000000000000000
+c3bbbb3cc994c000c999988cb7777b3c0000044444444455554444444440000053b333b55ccaccc65a8cccc5000000aaaa000000000000000000000000000000
+0c3333c00ccc00000c8888c0c3bbb3c0000555544444555555554444455550005555555556666666566666650000aaaaaaaa0000000000000000000000000000
+00888800089999800088880008888000005444545555555555555555454445005555555555555555555555550000000000000000000000000000000000000000
+08655580899999980085480085555880005444554444445555444444554445005eeee7755cccccc65cccc8c50000000000000000000000000000000000000000
+867666589aaaaaa90084580085555558005444544444444554444444454445005aaaeee55cccccc65c8cccc50000000000000000000000000000000000000000
+8676665888777788008548008555505800544454444444455444444445444500588aaaa55cccccc65cccccc50000000000000000000000000000000000000000
+8677665800866800008458008555505800544454444444455444444445444500598888855cc8caa65cccccc50000000000000000000000000000000000000000
+0866558000855800008548008555555800544454444444455444444445444500511999955cccccc65cccccc50000000000000000000000000000000000000000
+0886588000855800008458008555588000544555555555555555555555544500571111155cacccc65ccc8cc50000000000000000000000000000000000000000
+86665558085555800088880008888000000550000000000000000000000550005555555555555555555555550000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+22222222222222222222222222222222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+2222222222222222222222222222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+2222cdc2cdcccccdccccdcdcd2cdcd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+2222cdc2cdcdc2cdc22cdcdccdcd2222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+2222cdc2cdcd22cdccccdcdcdccd2222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222ccdcccdcd22cdc2222cdcd2cd2222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+22222222222222222222222222222222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+22222222222222222222222222222222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdccccccccdcd222222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222ccd22ccdcd22222cdccd22222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cdc2cdcdcd22222cdcdcd2222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2cd2cdcd22222cdcd2cd222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdcd22222cdcd22cd22cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdccccccccdcd222cd2cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdc222222cdcd2222cdcd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdc222222cdcd22222ccd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+222cd2222cdc222222cdcd222222cd22550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+22222222222222222222222222222222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+22222222222222222222222222222222550000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__label__
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa666aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a6aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a6aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6a6aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa666aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaadaaaadaaaaaaaaaadaaaadaaaaaaaaaadaaaadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaadddaadddaaaaaaaadddaadddaaaaaaaadddaadddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaddddddaaaaaaaaaaddddddaaaaaaaaaaddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaddddaaaaaaaaaaaaddddaaaaaaaaaaaaddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaddaaaaaaaaaaaaaaddaaaaaaaaaaaaaaddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa22222aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa2222222aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa222222222aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafffffffaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa4ffffffffaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa4f1fff1ffaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+9999999999999999999999999999999999999999999999999999999999999999fffffff999999999999999999999999999999999999999999999999999999999
+99999999999999999999999999999999999999999999999999999999999999999fffff9999999999999999999999999999999999999999999999999999999999
+9999999999999999999999999999999999999999999999999999999999999999cccfccc999999999999999999999999999999999999999999999999999999999
+9999999999999999999999999999999999999999999999999999999999999999ccccc9c999999999999999999999999999999999999999999999999999999999
+9999999999999999999999999999999999999999999999999999999999999999ccccccc999999999999999999999999999999999999999999999999999999999
+999999999999999999999999999999999999999999999999999999999999999ccccccccc99999999999999999999999999999999999999999999999999999999
+999999999999999999999999999999999999999999999999999999999999999ccccccccc99999999999999999999999999999999999999999999999999999999
+999999999999999999999999999999999999999999999999999999999999999cccc9cccc99999999999999999999999999999999999999999999999999999999
+
+__gff__
+0000000000000000000000010002020000000000000000000000000000000000040810200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__map__
+0d0e0d0d0d0d0e0d0d0d0e0d0d0d0d0e0d000d0e0d0d0d0d0e0d0d0d0e0d0d0d0d0e0d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000c000c000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00292a00000000000000000000292a00000000292a00000000000000000000292a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00393a00000000000000000000393a00000000393a00000000000000000000393a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00292a00000000000000000000292a00000000292a00000000000000000000292a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00393a00000000000000000000393a00000000393a00000000000000000000393a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00292a00002838283800000000292a00000000292a00002838283800000000292a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00393a00000000000000000000393a00000000393a00000000000000000000393a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000001b1c242526271b1c000000000000000000001b1c242526271b1c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000002b2c343536372b2c000000000000000000002b2c343536372b2c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b000b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000005050500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000505000505050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000050505050505050505050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000500000500000500000000050000000000000500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000005000000000500000500000500050005000000000000000000000500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000050500000000000000050000050500050500050505050005000005050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000050000000000000000050000050500000500050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__sfx__
+000800000c7201772023720287201b5001f500215000d5000f5001250014500165000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c5000c500
+010100000d62000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0003000017730187201b7102371000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0003000021750167500d7500775003750007500075002700007001a7001770015700147001370011700107000e7000c7000b70009700087000770007700067000570004700047000470004700037000270002700
+000d0000067400e720157101d71025710257000770000700007000070000700007002270022700007000070001700007000070000700007000070000700007000070000700007000070000700007000070000700
+010700000f114161241d134221441f1341a1240f11400104001040010400104001040010400104001040010400104001040010400104001040010400104001040010400104001040010400104001040010400104
+011400000c1250c1250c1050c1250c1250c1050c1250c125001050e10510105001050e1251012500105101251012500105101251012500105001051310500105001051f1241f125211241f1251c124181251a122
+011400000011013500005000011011500135000250000110001100072000720001100011000110007000070000110007000072000720001100070000700007000070000700007000070000700000000000000000
+000b000025510215101d5111a5101752115540125400e5500b5500956005571035000050100700007000070000700007000070000700007000070000700007000070000700007000070000700007000070000700
+001100000005300000000530000011051000530000000053000530000000053000001105100053000000005300053000000005300000110510005300000000530005300000000530000011051000530000000053
+001100000c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c1150c115101151011510115101151011510115101151011510115101151011510115
+000500000c5600c5650e5650e5550c5550c5450e5450e5350c5350c5250e5250e5150c5150c51500500005000050000500005000050000500005000050000500005000050000500005000050000500005000c505
+__music__
+04 06074344
+01 094a4344
+03 090a4344
+

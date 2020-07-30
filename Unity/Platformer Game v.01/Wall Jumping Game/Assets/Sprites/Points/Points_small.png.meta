@@ -1,0 +1,694 @@
+fileFormatVersion: 2
+guid: 010ee830b1fe85143b8e966a7a41ddf0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8937683563011915746
+    second: Points_small_0
+  - first:
+      213: -6188497736491040998
+    second: Points_small_1
+  - first:
+      213: -959094810108249910
+    second: Points_small_2
+  - first:
+      213: 3912367910725689367
+    second: Points_small_3
+  - first:
+      213: -3315154861054838129
+    second: Points_small_4
+  - first:
+      213: 6094236572448512245
+    second: Points_small_5
+  - first:
+      213: 8365628502281825104
+    second: Points_small_6
+  - first:
+      213: 1010276723773167944
+    second: Points_small_7
+  - first:
+      213: -448114235969654004
+    second: Points_small_8
+  - first:
+      213: -1133606461956331184
+    second: Points_small_9
+  - first:
+      213: 7443148964931084739
+    second: Points_small_10
+  - first:
+      213: 4946733069661942285
+    second: Points_small_11
+  - first:
+      213: -5201087692545282194
+    second: Points_small_12
+  - first:
+      213: -928971080622771327
+    second: Points_small_13
+  - first:
+      213: 2848614487639848283
+    second: Points_small_14
+  - first:
+      213: -4957305354381860360
+    second: Points_small_15
+  - first:
+      213: -2518952697707605994
+    second: Points_small_16
+  - first:
+      213: -7350512947779427160
+    second: Points_small_17
+  - first:
+      213: -7086555920377250045
+    second: Points_small_18
+  - first:
+      213: 2118990786594104645
+    second: Points_small_19
+  - first:
+      213: 2332306270760557273
+    second: Points_small_20
+  - first:
+      213: 5450841335317187789
+    second: Points_small_21
+  - first:
+      213: -8153740869557405469
+    second: Points_small_22
+  - first:
+      213: 7018337029341150361
+    second: Points_small_23
+  - first:
+      213: 1622478523953950030
+    second: Points_small_24
+  - first:
+      213: -3635103054975839768
+    second: Points_small_25
+  - first:
+      213: -7877091147753022832
+    second: Points_small_26
+  - first:
+      213: 9044575150886979247
+    second: Points_small_27
+  - first:
+      213: -1014729763659468029
+    second: Points_small_28
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Points_small_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0f817dff16916b429cc12c2c4cdb540
+      internalID: 8937683563011915746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_1
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0964d002bc442cc4cbddd0ed8e6891af
+      internalID: -6188497736491040998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_2
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2be52f5cd6cad14997b7ea3e55a0afe
+      internalID: -959094810108249910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_3
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19e28e4d987e0de44aebffee6740693a
+      internalID: 3912367910725689367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_4
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee05c1d56ac62df45be92eda300028a0
+      internalID: -3315154861054838129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_5
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f879c01e32615034ea4df881b5bb64e4
+      internalID: 6094236572448512245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_6
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83c13108c2bfb4043969791f20ae712a
+      internalID: 8365628502281825104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_7
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cafab1a50e39be489d4abe9cbc1aec9
+      internalID: 1010276723773167944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_8
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0982c31719c2e54ab467aca038bb27c
+      internalID: -448114235969654004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_9
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76ea281c74b07384fac3a318f5c81718
+      internalID: -1133606461956331184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_10
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 707b99f4d8e0a1144a5546d81acc30eb
+      internalID: 7443148964931084739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_11
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b2f8e80f9e2afb48be880c7320d6cfb
+      internalID: 4946733069661942285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_12
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 43
+        width: 23
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5315419, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7ca20914144fe5479427f59356658cf
+      internalID: -5201087692545282194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_13
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 43
+        width: 23
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5343853, y: 0.50000024}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44662387eea1abf4b83e26aa9fe805f6
+      internalID: -928971080622771327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_14
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 43
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3b843ce17757b542abae7944e6b06ea
+      internalID: 2848614487639848283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_15
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 43
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f10f05ed0eb43e244b75401e1cd31d4c
+      internalID: -4957305354381860360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_16
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac5993d50e1e4bf42b0e53c372e494fc
+      internalID: -2518952697707605994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_17
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 43
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08d5b91248aa8a3499ebddcc9ed3c010
+      internalID: -7350512947779427160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_18
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 43
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2afb2630e942864a89caf06506fa261
+      internalID: -7086555920377250045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_19
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 43
+        width: 23
+        height: 30
+      alignment: 9
+      pivot: {x: 0.5343853, y: 0.50000024}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87bf5a631c37fd445a325d7872b7a857
+      internalID: 2118990786594104645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_21
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c464fcff622e1254baebca0aac686e61
+      internalID: 5450841335317187789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_22
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88a9ac0c8e4a4214faf2fdceacf351b5
+      internalID: -8153740869557405469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_23
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f41a4cd3b56c3c04ab9439e663b07f22
+      internalID: 7018337029341150361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Points_small_24
+      rect:
+        serializedVersion: 2
+        x: 601
+        y: 42
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2aeb908ad24b0af41b67c904cb7e3dce
+      internalID: 1622478523953950030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

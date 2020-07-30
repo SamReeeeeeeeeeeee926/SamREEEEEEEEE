@@ -1,0 +1,30 @@
+emitter_type: CIRCLE
+circle_radius: 1000
+
+particles_per_second: 966
+max_concurrent_particles: 1000
+particles_to_emit: -1
+emit_all_at_once: FALSE
+shrink_over_time: TRUE
+
+min_size: 7 1
+max_size: 56 8
+min_color: 252 255 233 255
+max_color: 252 255 233 255
+min_rotation: 40.343
+max_rotation: 146.903
+min_speed: 3.07627
+max_speed: 128.938
+min_emission_angle: -142.305
+max_emission_angle: 137.328
+
+acceleration: 0 0
+min_rotation_speed: 23.9235
+max_rotation_speed: 27.8237
+rotation_direction: COUNTER_CLOCKWISE
+min_lifetime: 0.753502
+max_lifetime: 1.51854
+
+texture1: (null)
+texture2: (null)
+texture3: (null)
